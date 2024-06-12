@@ -2,6 +2,9 @@ import express from 'express'
 import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
+import { validationResult } from 'express-validator'
+
+import { registerValidation } from './validations/auth.js'
 
 dotenv.config()
 
@@ -18,20 +21,15 @@ app.get('/', (req, res) => {
     res.send(' 111 Hello world')
 })
 
-app.post('/auth/login', (req, res) => {
-    console.log(req.body)
+app.post('/auth/register', registerValidation, (req, res) => {
+    const errors = validationResult(req)
 
-    const token = jwt.sign(
-        {
-            email: req.body.email,
-            fullName: 'Вася пупкин',
-        },
-        process.env.JWT_SECRET
-    )
+    if (!errors.isEmpty()) {
+        return res.status(400).json(errors.array())
+    }
 
     res.json({
         success: true,
-        token,
     })
 })
 
