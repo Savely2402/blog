@@ -29,7 +29,6 @@ export const Login = () => {
 
     const onSubmit = async (values) => {
         const data = await dispatch(fetchAuth(values))
-        console.log(data)
 
         if (!data.payload) {
             alert('Не удалось авторизоваться')
@@ -68,6 +67,7 @@ export const Login = () => {
                     fullWidth
                 />
                 <Button
+                    disabled={!isValid}
                     type="submit"
                     size="large"
                     variant="contained"
