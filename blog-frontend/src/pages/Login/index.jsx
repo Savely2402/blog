@@ -1,5 +1,6 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { Navigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Paper from '@mui/material/Paper'
@@ -7,10 +8,11 @@ import Button from '@mui/material/Button'
 import { useForm } from 'react-hook-form'
 
 import styles from './Login.module.scss'
-import { fetchAuth } from '../../redux/slices/auth'
+import { fetchAuth, selectIsAuth } from '../../redux/slices/auth'
 
 export const Login = () => {
     const dispatch = useDispatch()
+    const isAuth = useSelector(selectIsAuth)
 
     const {
         register,
@@ -19,8 +21,8 @@ export const Login = () => {
         formState: { errors, isValid },
     } = useForm({
         defaultValues: {
-            email: 'savel.j@gm.com',
-            password: '123',
+            email: 'ivan@gmail.com',
+            password: '1234',
         },
         mode: 'onChange',
     })
@@ -29,7 +31,9 @@ export const Login = () => {
         dispatch(fetchAuth(values))
     }
 
-    console.log(errors, isValid)
+    if (isAuth) {
+        return <Navigate to="/" />
+    }
 
     return (
         <Paper classes={{ root: styles.root }}>
