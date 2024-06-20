@@ -15,10 +15,6 @@ export const Header = () => {
         dispatch(logout())
     }
 
-    if (!isAuth) {
-        return <Navigate to="/login" />
-    }
-
     return (
         <div className={styles.root}>
             <Container maxWidth="lg">
