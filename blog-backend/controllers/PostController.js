@@ -51,6 +51,7 @@ export const getOne = async (req, res) => {
                 new: true,
             }
         )
+            .populate('user')
             .then((doc) => {
                 if (!doc) {
                     return res.status(404).json({
