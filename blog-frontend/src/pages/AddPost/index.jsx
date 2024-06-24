@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import TextField from '@mui/material/TextField'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
@@ -8,11 +8,12 @@ import 'easymde/dist/easymde.min.css'
 import styles from './AddPost.module.scss'
 import { useSelector } from 'react-redux'
 import { selectIsAuth } from '../../redux/slices/auth'
-import { useNavigate, Navigate } from 'react-router-dom'
+import { useNavigate, Navigate, useParams } from 'react-router-dom'
 import { useRef } from 'react'
 import axios from '../../axios'
 
 export const AddPost = () => {
+    const { id } = useParams()
     const isAuth = useSelector(selectIsAuth)
     const navigate = useNavigate()
     const [text, setText] = React.useState('')
@@ -21,6 +22,8 @@ export const AddPost = () => {
     const [imageUrl, setImageUrl] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const inputFileRef = useRef(null)
+
+    const isEditing = Boolean(id)
 
     const formData = new FormData()
 
@@ -58,21 +61,36 @@ export const AddPost = () => {
                 text,
             }
 
-            const { data } = await axios.post('/posts', fields)
+            const { data } = isEditing
+                ? await axios.patch(`/posts/${id}`, fields)
+                : await axios.post('/posts', fields)
 
-            const id = data._id
+            const _id = isEditing ? id : data._id
 
-            navigate(`/posts/${id}`)
+            navigate(`/posts/${_id}`)
         } catch (err) {
             console.warn(err)
 
-            const errDetails = err.response?.data?.errors
-                .map((error) => error.msg)
-                .join(', ')
-
-            alert(`Ошибка при создании статьи!\n${errDetails}`)
+            alert(`Ошибка при создании статьи!`)
         }
     }
+
+    useEffect(() => {
+        if (id) {
+            axios
+                .get(`posts/${id}`)
+                .then((res) => {
+                    setTitle(res.data.title)
+                    setTags(res.data.tags.join(','))
+                    setText(res.data.text)
+                    setImageUrl(res.data.imageUrl)
+                })
+                .catch((err) => {
+                    console.warn(err)
+                    alert('Не удалось изменить статью!')
+                })
+        }
+    }, [])
 
     const options = React.useMemo(
         () => ({
@@ -154,7 +172,7 @@ export const AddPost = () => {
             />
             <div className={styles.buttons}>
                 <Button onClick={onSubmit} size="large" variant="contained">
-                    Опубликовать
+                    {isEditing ? 'Сохранить' : 'Опубликовать'}
                 </Button>
                 <a href="/">
                     <Button size="large">Отмена</Button>

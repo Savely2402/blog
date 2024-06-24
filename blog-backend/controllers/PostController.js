@@ -142,7 +142,7 @@ export const update = async (req, res) => {
                 user: req.body.user,
                 tags: req.body.tags,
             }
-        )
+        ).exec()
 
         res.json({
             success: true,
