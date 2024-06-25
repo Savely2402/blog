@@ -5,6 +5,7 @@ import { Home, FullPost, Registration, AddPost, Login } from './pages'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchAuthMe, selectIsAuth } from './redux/slices/auth'
 import { useEffect } from 'react'
+import { TagPosts } from './pages/TagPosts'
 
 function App() {
     const dispatch = useDispatch()
@@ -25,6 +26,7 @@ function App() {
                     <Route path="/add-post" element={<AddPost />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Registration />} />
+                    <Route path="/tags/:name" element={<TagPosts />} />
                 </Routes>
             </Container>
         </>
