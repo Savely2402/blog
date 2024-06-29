@@ -6,63 +6,38 @@ import axios from './../axios'
 import { Post } from '../components/Post'
 import { AddComment } from '../components/AddComment'
 import { CommentsBlock } from '../components/CommentsBlock/index'
+import { usePostById } from '../hooks/usePostById'
+import { useCommentsByPostId } from '../hooks/useCommentsByPostId'
 
 export const FullPost = () => {
-    const [comments, setComments] = useState([])
-    const [data, setData] = useState()
-    const [isLoading, setIsLoading] = useState(true)
     const { id } = useParams()
+    const { postData, isPostLoading } = usePostById(id)
+    const { comments, isCommentsLoading, setComments } = useCommentsByPostId(id)
 
-    useEffect(() => {
-        axios
-            .get(`/posts/${id}`)
-            .then((res) => {
-                setData(res.data)
-                setIsLoading(false)
-            })
-            .catch((err) => {
-                console.log(err)
-
-                alert('Ошибка при получении статьи')
-            })
-    }, [])
-
-    useEffect(() => {
-        console.log(comments.length)
-        axios
-            .get(`/posts/${id}/comments`)
-            .then((res) => {
-                setComments(res.data)
-            })
-            .catch((err) => {
-                console.warn(err)
-
-                alert('Ошибка при получении комментариев')
-            })
-    }, [])
-
-    if (isLoading) {
-        return <Post isLoading={isLoading} isFullPost />
+    if (isPostLoading) {
+        return <Post isLoading={isPostLoading} isFullPost />
     }
 
     return (
         <>
             <Post
-                id={data._id}
-                title={data.title}
+                id={postData._id}
+                title={postData.title}
                 imageUrl={
-                    data.imageUrl ? `http://localhost:4444${data.imageUrl}` : ''
+                    postData.imageUrl
+                        ? `http://localhost:4444${postData.imageUrl}`
+                        : ''
                 }
-                user={data.user}
-                createdAt={data.createdAt}
-                viewsCount={data.viewsCount}
+                user={postData.user}
+                createdAt={postData.createdAt}
+                viewsCount={postData.viewsCount}
                 commentsCount={comments.length}
-                tags={data.tags}
+                tags={postData.tags}
                 isFullPost
             >
-                <ReactMarkdown children={data.text}></ReactMarkdown>
+                <ReactMarkdown children={postData.text}></ReactMarkdown>
             </Post>
-            <CommentsBlock items={comments} isLoading={false}>
+            <CommentsBlock items={comments} isLoading={isCommentsLoading}>
                 <AddComment comments={comments} setComments={setComments} />
             </CommentsBlock>
         </>
