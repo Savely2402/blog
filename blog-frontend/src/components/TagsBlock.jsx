@@ -12,29 +12,37 @@ import { SideBlock } from './SideBlock'
 import { Link } from 'react-router-dom'
 
 export const TagsBlock = ({ items, isLoading = true }) => {
+    const renderTag = (name, index) => (
+        <Link
+            style={{ textDecoration: 'none', color: 'black' }}
+            to={`/tags/${name}`}
+        >
+            <ListItem key={index} disablePadding>
+                <ListItemButton>
+                    <ListItemIcon>
+                        <TagIcon />
+                    </ListItemIcon>
+                    {isLoading ? (
+                        <Skeleton width={100} />
+                    ) : (
+                        <ListItemText primary={name} />
+                    )}
+                </ListItemButton>
+            </ListItem>
+        </Link>
+    )
+
+    const tagsToRender = isLoading ? [...Array(5)] : items
+
     return (
         <SideBlock title="Тэги">
-            <List>
-                {(isLoading ? [...Array(5)] : items).map((name, i) => (
-                    <Link
-                        style={{ textDecoration: 'none', color: 'black' }}
-                        to={`/tags/${name}`}
-                    >
-                        <ListItem key={i} disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    <TagIcon />
-                                </ListItemIcon>
-                                {isLoading ? (
-                                    <Skeleton width={100} />
-                                ) : (
-                                    <ListItemText primary={name} />
-                                )}
-                            </ListItemButton>
-                        </ListItem>
-                    </Link>
-                ))}
-            </List>
+            {items.length ? (
+                <List>
+                    {tagsToRender.map((name, index) => renderTag(name, index))}
+                </List>
+            ) : (
+                <h3 style={{ marginLeft: '12px' }}>Тегов нет</h3>
+            )}
         </SideBlock>
     )
 }

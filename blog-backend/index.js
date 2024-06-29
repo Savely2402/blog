@@ -6,7 +6,11 @@ import cors from 'cors'
 
 import { handleValidationErrors, checkAuth } from './utils/index.js'
 import * as Validation from './validations.js'
-import { PostController, UserController } from './controllers/index.js'
+import {
+    PostController,
+    UserController,
+    CommentController,
+} from './controllers/index.js'
 
 dotenv.config()
 
@@ -74,6 +78,9 @@ app.patch(
     handleValidationErrors,
     PostController.update
 )
+app.post('/posts/:id/comments', checkAuth, CommentController.create)
+app.get('/posts/:id/comments', checkAuth, CommentController.getCommentsByPostId)
+app.get('/comments', CommentController.getAll)
 
 app.listen(4444, (err) => {
     if (err) {

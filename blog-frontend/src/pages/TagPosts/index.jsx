@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux'
 import { SideBar } from '../../components/SideBar'
 import { useTags } from '../../hooks/useTags'
 import { Grid } from '@mui/material'
+import { useComments } from '../../hooks/useComments'
 
 export const TagPosts = () => {
     const userData = useSelector((state) => state.auth.data)
@@ -15,6 +16,7 @@ export const TagPosts = () => {
 
     const { filteredAndSortedPosts, isPostsLoading } = usePosts(sort, name)
     const { tags, isTagsLoading } = useTags()
+    const { comments, isCommentsLoading } = useComments()
 
     return (
         <>
@@ -26,7 +28,12 @@ export const TagPosts = () => {
                     isPostsLoading={isPostsLoading}
                     userData={userData}
                 />
-                <SideBar tags={tags} isTagsLoading={isTagsLoading} />
+                <SideBar
+                    tags={tags}
+                    isTagsLoading={isTagsLoading}
+                    comments={comments}
+                    isCommentsLoading={isCommentsLoading}
+                />
             </Grid>
         </>
     )

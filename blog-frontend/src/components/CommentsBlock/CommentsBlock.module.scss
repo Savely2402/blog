@@ -1,0 +1,23 @@
+.commentsList {
+    overflow-y: auto;
+    max-height: 300px;
+}
+
+.commentsList::-webkit-scrollbar {
+    width: 7px;
+}
+
+.commentsList::-webkit-scrollbar-track {
+    border-radius: 10px;
+}
+
+.commentsList::-webkit-scrollbar-thumb {
+    background: rgba(167, 165, 255, 0.8);
+    border-radius: 10px;
+}
+
+.commentsList::-webkit-scrollbar-thumb:hover {
+    cursor: pointer;
+    background: rgba(167, 165, 255, 1);
+    border-radius: 10px;
+}

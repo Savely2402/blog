@@ -4,9 +4,11 @@ import { useSelector } from 'react-redux'
 
 import { usePosts } from '../hooks/usePosts'
 import { useTags } from '../hooks/useTags'
+
 import { SortTabs } from '../components/SortTabs'
 import { PostsList } from '../components/PostsList'
 import { SideBar } from '../components/SideBar'
+import { useComments } from '../hooks/useComments'
 
 export const Home = () => {
     const userData = useSelector((state) => state.auth.data)
@@ -14,6 +16,7 @@ export const Home = () => {
 
     const { filteredAndSortedPosts, isPostsLoading } = usePosts(sort)
     const { tags, isTagsLoading } = useTags()
+    const { comments, isCommentsLoading } = useComments()
 
     return (
         <>
@@ -24,7 +27,12 @@ export const Home = () => {
                     isPostsLoading={isPostsLoading}
                     userData={userData}
                 />
-                <SideBar tags={tags} isTagsLoading={isTagsLoading} />
+                <SideBar
+                    tags={tags}
+                    isTagsLoading={isTagsLoading}
+                    comments={comments}
+                    isCommentsLoading={isCommentsLoading}
+                />
             </Grid>
         </>
     )

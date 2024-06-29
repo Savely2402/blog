@@ -1,4 +1,5 @@
 import PostModel from '../models/Post.js'
+import CommentsModel from '../models/Comments.js'
 
 export const getLastTags = async (req, res) => {
     try {
@@ -51,13 +52,17 @@ export const getOne = async (req, res) => {
                 new: true,
             }
         )
-            .populate('user')
+            .populate({
+                path: 'user',
+                select: ['fullName', 'avatarUrl'],
+            })
             .then((doc) => {
                 if (!doc) {
                     return res.status(404).json({
                         message: 'Статья не найдена',
                     })
                 }
+
                 res.json(doc)
             })
             .catch((err) => {
@@ -96,6 +101,16 @@ export const remove = async (req, res) => {
                     message: 'Не удалось удалить статью',
                 })
             })
+
+        try {
+            CommentsModel.deleteMany({ post: postId })
+        } catch (err) {
+            console.log(err)
+
+            res.status(500).json({
+                message: 'Не удалось удалить комментарии',
+            })
+        }
     } catch (err) {
         console.log(err)
 
